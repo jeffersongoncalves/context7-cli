@@ -8,9 +8,16 @@ use GuzzleHttp\Exception\GuzzleException;
 use JeffersonGoncalves\LaravelZero\ApiClient\AbstractApiClient;
 use JeffersonGoncalves\LaravelZero\ApiClient\ApiException;
 use JeffersonGoncalves\LaravelZero\ApiClient\Auth;
+use Psr\Http\Message\ResponseInterface;
 
 class Context7Service extends AbstractApiClient
 {
+    /**
+     * Response from the most recent request, kept only to read back the
+     * RateLimit-* headers (not documented in Context7's API docs).
+     */
+    protected ?ResponseInterface $lastResponse = null;
+
     public function __construct(AuthService $authService)
     {
         $credentials = $authService->load();
@@ -187,6 +194,59 @@ class Context7Service extends AbstractApiClient
     protected function newApiException(int $statusCode, array $body): ApiException
     {
         return Context7ApiException::fromResponse($statusCode, $body);
+    }
+
+    /**
+     * Rate-limit status from the most recent response's RateLimit-* headers.
+     * Null values mean no request was made yet, or the API didn't send them.
+     *
+     * @return array{limit: ?string, remaining: ?string, reset: ?string}
+     */
+    public function lastRateLimit(): array
+    {
+        $header = fn (string $name): ?string => $this->lastResponse?->getHeaderLine($name) ?: null;
+
+        return [
+            'limit' => $header('RateLimit-Limit'),
+            'remaining' => $header('RateLimit-Remaining'),
+            'reset' => $header('RateLimit-Reset'),
+        ];
+    }
+
+    /**
+     * Same as the parent's request(), but also stashes the response so
+     * {@see lastRateLimit()} can read its headers afterwards.
+     *
+     * @param  array<string, mixed>  $options
+     * @return array<string, mixed>
+     */
+    protected function request(string $method, string $path, array $options = []): array
+    {
+        $options['headers'] = array_merge(
+            $this->defaultHeaders(),
+            $this->authHeaders(),
+            $options['headers'] ?? [],
+        );
+
+        try {
+            $response = $this->client->request($method, $path, $options);
+            $this->lastResponse = $response;
+            $body = $response->getBody()->getContents();
+
+            if ($body === '') {
+                return [];
+            }
+
+            return json_decode($body, true) ?? [];
+        } catch (BadResponseException $e) {
+            $this->lastResponse = $e->getResponse();
+            $statusCode = $e->getResponse()->getStatusCode();
+            $body = json_decode($e->getResponse()->getBody()->getContents(), true) ?? [];
+
+            throw $this->newApiException($statusCode, $body);
+        } catch (GuzzleException $e) {
+            throw $this->newApiException(0, ['message' => "HTTP request failed: {$e->getMessage()}"]);
+        }
     }
 
     /**
