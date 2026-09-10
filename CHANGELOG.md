@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-09-10
+
+### Bug Fixes
+
+- Track composer.lock
+
+### Features
+
+- **auth:** Support --from-env and an interactive prompt in auth:save
+
+### Miscellaneous Tasks
+
+- Add FUNDING.yml
+
 ## [1.0.0] - 2026-09-10
 
 ### Bug Fixes
