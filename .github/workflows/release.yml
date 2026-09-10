@@ -71,13 +71,13 @@ jobs:
         run: echo "${{ steps.v.outputs.version }}" > version.txt
 
       - name: Generate CHANGELOG.md
-        uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5 # v4.8.0
+        uses: orhun/git-cliff-action@3d96a18cc4ec17e9dc69ddcc424ccafaf1f78ce2 # v4.9.0
         with:
           config: cliff.toml
           args: --tag ${{ steps.v.outputs.tag }} -o CHANGELOG.md
 
       - name: Generate release notes
-        uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5 # v4.8.0
+        uses: orhun/git-cliff-action@3d96a18cc4ec17e9dc69ddcc424ccafaf1f78ce2 # v4.9.0
         with:
           config: cliff.toml
           args: --tag ${{ steps.v.outputs.tag }} --unreleased --strip all -o RELEASE_NOTES.md
@@ -97,12 +97,13 @@ jobs:
         id: sha
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Create tag and release at the release commit
+      - name: Create draft tag and release at the release commit
         run: |
           gh release create ${{ steps.v.outputs.tag }} \
             --title "${{ steps.v.outputs.tag }}" \
             --notes-file RELEASE_NOTES.md \
             --target ${{ steps.sha.outputs.sha }} \
+            --draft \
             --latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -111,5 +112,10 @@ jobs:
         run: |
           cp builds/context7 context7.phar
           gh release upload ${{ steps.v.outputs.tag }} context7.phar --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish the release
+        run: gh release edit ${{ steps.v.outputs.tag }} --draft=false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

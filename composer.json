@@ -16,8 +16,13 @@
         "php": "^8.3"
     },
     "require-dev": {
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^7.10",
+        "jeffersongoncalves/laravel-zero-api-client": "^1.0",
+        "jeffersongoncalves/laravel-zero-console": "^1.0",
+        "jeffersongoncalves/laravel-zero-credentials": "^1.0",
         "jeffersongoncalves/laravel-zero-self-update": "^1.1",
-        "laravel-zero/framework": "^13.0",
+        "laravel-zero/framework": "^12.0.2",
         "laravel/pint": "^1.25",
         "mockery/mockery": "^1.6",
         "pestphp/pest": "^3.8|^4.7",

@@ -5,4 +5,7 @@ parameters:
         - tests
     ignoreErrors:
         -
+            identifier: property.notFound
+            path: tests/*
+        -
             identifier: method.notFound
