@@ -1,0 +1,60 @@
+{
+    "name": "jeffersongoncalves/context7-cli",
+    "description": "A Context7 API CLI built with Laravel Zero. Search libraries, fetch up-to-date documentation snippets, and manage Context7 resources from your terminal.",
+    "keywords": ["cli", "laravel-zero", "console"],
+    "homepage": "https://github.com/jeffersongoncalves/context7-cli",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jefferson Simão Gonçalves",
+            "email": "gerson.simao.92@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.3"
+    },
+    "require-dev": {
+        "jeffersongoncalves/laravel-zero-self-update": "^1.1",
+        "laravel-zero/framework": "^13.0",
+        "laravel/pint": "^1.25",
+        "mockery/mockery": "^1.6",
+        "pestphp/pest": "^3.8|^4.7",
+        "phpstan/phpstan": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "build": "php context7 app:build context7 --build-version=\"$(git describe --tags --abbrev=0 2>/dev/null || echo unreleased)\"",
+        "lint": "./vendor/bin/pint",
+        "test:lint": "./vendor/bin/pint --test",
+        "test:unit": "./vendor/bin/pest --parallel",
+        "test:types": "./vendor/bin/phpstan analyse --memory-limit=256M",
+        "phpstan": "./vendor/bin/phpstan analyse --memory-limit=256M",
+        "phpstan-baseline": "./vendor/bin/phpstan analyse --generate-baseline --memory-limit=256M",
+        "test": [
+            "@test:unit",
+            "@test:lint"
+        ]
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "bin": ["builds/context7"]
+}
