@@ -27,8 +27,10 @@ Or grab the standalone PHAR from the [latest release](https://github.com/jeffers
 
 ## Usage
 
-Every command is non-interactive: all input arrives as arguments and flags,
-so a script or an AI agent can drive it without a TTY.
+Every command takes its input as arguments and flags, so a script or an AI
+agent can drive it without a TTY — `auth:save` is the only exception, which
+falls back to an interactive password prompt when run without an argument
+or `--from-env`.
 
 ### Authentication
 
@@ -36,7 +38,9 @@ An API key raises your rate limit and is required for `refresh`. Get one at
 [context7.com/dashboard](https://context7.com/dashboard).
 
 ```bash
-context7 auth:save ctx7sk-your-api-key   # or set $CONTEXT7_API_KEY and omit the argument
+context7 auth:save ctx7sk-your-api-key   # pass it directly
+context7 auth:save                       # or get prompted for it interactively
+CONTEXT7_API_KEY=ctx7sk-your-api-key context7 auth:save --from-env   # or read it from the environment
 context7 auth:show
 context7 auth:forget
 ```

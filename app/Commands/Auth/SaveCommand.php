@@ -6,26 +6,42 @@ use App\DTOs\Credentials;
 use App\Services\AuthService;
 use LaravelZero\Framework\Commands\Command;
 
+use function Laravel\Prompts\password;
+
 class SaveCommand extends Command
 {
     /**
-     * Non-interactive by design (see ExampleCommand): the key is an argument,
-     * with an env-var fallback, so scripts and AI agents never need a TTY.
+     * The key can come from an argument (scripts/AI agents), --from-env (CI,
+     * reads $CONTEXT7_API_KEY explicitly), or an interactive password prompt
+     * when neither is given. (--env is already a built-in Artisan option for
+     * selecting the app environment, so it can't be reused here.)
      *
      * @var string
      */
-    protected $signature = 'auth:save {api-key? : Context7 API key from https://context7.com/dashboard (defaults to $CONTEXT7_API_KEY)}';
+    protected $signature = 'auth:save {api-key? : Context7 API key from https://context7.com/dashboard}
+        {--from-env : Read the key from $CONTEXT7_API_KEY instead of prompting}';
 
     protected $description = 'Save a Context7 API key';
 
     public function handle(AuthService $authService): int
     {
-        $apiKey = $this->argument('api-key') ?? (getenv('CONTEXT7_API_KEY') ?: null);
+        $apiKey = $this->argument('api-key');
+
+        if (! $apiKey && $this->option('from-env')) {
+            $apiKey = getenv('CONTEXT7_API_KEY') ?: null;
+
+            if (! $apiKey) {
+                $this->components->error('CONTEXT7_API_KEY is not set.');
+
+                return self::FAILURE;
+            }
+        }
 
         if (! $apiKey) {
-            $this->components->error('Provide an API key as an argument or set CONTEXT7_API_KEY.');
-
-            return self::FAILURE;
+            $apiKey = password(
+                label: 'Context7 API key',
+                required: true,
+            );
         }
 
         $authService->save(new Credentials($apiKey));
