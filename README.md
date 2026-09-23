@@ -11,7 +11,7 @@
 A Context7 API CLI built with [Laravel Zero](https://laravel-zero.com). Search libraries, fetch up-to-date documentation snippets, and manage Context7 resources from your terminal.
 
 <p align="center">
-  <a href="https://github.com/jeffersongoncalves/context7-cli/actions"><img src="https://github.com/jeffersongoncalves/context7-cli/actions/workflows/run-tests.yml/badge.svg" alt="Tests" /></a>
+  <a href="https://github.com/jeffersongoncalves/context7-cli/actions"><img src="https://github.com/jeffersongoncalves/context7-cli/actions/workflows/tests.yml/badge.svg" alt="Tests" /></a>
   <a href="https://packagist.org/packages/jeffersongoncalves/context7-cli"><img src="https://img.shields.io/packagist/dt/jeffersongoncalves/context7-cli" alt="Total Downloads" /></a>
   <a href="https://github.com/jeffersongoncalves/context7-cli/blob/main/LICENSE"><img src="https://img.shields.io/github/license/jeffersongoncalves/context7-cli" alt="License" /></a>
   <img src="https://img.shields.io/badge/php-%3E%3D8.3-8892BF" alt="PHP 8.3+" />
