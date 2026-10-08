@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2026-10-08
+
+### CI/CD
+
+- Pass release version input through env
+- Standardize dependabot config
+- Standardize tests workflow
+- Remove run-tests.yml (replaced by tests.yml)
+- Standardize tests workflow
+- Auto-merge dependabot github-actions minor/patch
+
+### Dependencies
+
+- **deps:** Bump orhun/git-cliff-action (#7)
+
+### Documentation
+
+- Point tests badge to tests.yml
+
+### Features
+
+- Submit several GitHub repositories with add:github
+
 ## [1.2.0] - 2026-09-10
 
 ### Features
