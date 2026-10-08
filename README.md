@@ -81,6 +81,8 @@ context7 refresh /vercel/next.js --branch=canary --git-token=ghp_xxx
 
 ```bash
 context7 add:github https://github.com/vercel/next.js
+context7 add:github vercel/next.js laravel/framework           # owner/repo works too; several at once
+context7 add:github --from=repos.txt --delay=8                 # one repo per line, # comments allowed
 context7 add:gitlab https://gitlab.com/org/repo
 context7 add:bitbucket https://bitbucket.org/org/repo
 context7 add:git https://git.example.com/org/repo --private --generate-docs
@@ -88,6 +90,8 @@ context7 add:openapi https://api.example.com/openapi.json
 context7 add:llmstxt https://example.com/llms.txt
 context7 add:website https://example.com/docs --base-url=https://example.com/docs
 ```
+
+When several repositories are sent, `add:github` waits `--delay` seconds (default 8) between them, keeps going when one fails and ends with a summary — exit code 1 if any failed.
 
 ### Teamspace policies (requires an API key)
 
